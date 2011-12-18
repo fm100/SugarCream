@@ -1,4 +1,6 @@
 from django.conf.urls.defaults import patterns, include, url
+from django.contrib.auth.views import login as loginpage
+from sugarcream.views import *
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -14,4 +16,9 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
+
+    url(r'^$', mainpage),
+    url(r'^login/$', loginpage),
+    url(r'^logout/$', logoutpage),
+    url(r'^register/$', registerpage),
 )

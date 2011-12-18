@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+{% if user.is_authenticated %}
+<p>You already logged in {{ user.username }}.</p>
+{% else %}
+<form method="post" action=".">
+{% csrf_token %}
+{{ form.as_table }}
+<input type="hidden" name="next" value="/" />
+<input type="submit" value="Login" />
+<a href="/register/">Sign up</a>
+</form>
+{% endif %}
+{% endblock %}
