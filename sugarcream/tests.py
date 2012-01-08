@@ -8,7 +8,7 @@ Replace this with more appropriate tests for your application.
 """
 
 from django.test import TestCase
-from sugarcream.models import Project
+from sugarcream.models import *
 from django.contrib.auth.models import User
 
 class ProjectTest(TestCase):
@@ -68,3 +68,26 @@ class ProjectTest(TestCase):
         users = User.objects.all()
         for user in users:
             user.delete()
+
+class BacklogItemTest(TestCase):
+    def setUp(self):
+        item = BacklogItem()
+        item.name = 'testItem'
+        item.summary = 'summary'
+        item.description = 'description'
+        item.priority = 0
+        item.status = 'pending'
+        item.save()
+
+    def testItemValues(self):
+        item = BacklogItem.objects.get(id=1)
+        self.assertEqual(item.name, 'testItem')
+        self.assertEqual(item.summary, 'summary')
+        self.assertEqual(item.description, 'description')
+        self.assertEqual(item.priority, 0)
+        self.assertEqual(item.status, 'pending')
+
+    def tearDown(self):
+        items = BacklogItem.objects.all()
+        for item in items:
+            item.delete()

@@ -4,6 +4,29 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Project(models.Model):
+    '''
+    @owner : The person who made this project.
+    @name : Project name.
+    @collaborators : Project members.
+    '''
     owner = models.ForeignKey(User, related_name='owned_project_set')
-    name = models.CharField(max_length=128, unique=True)
+    name = models.CharField(max_length=32, unique=True)
     collaborators = models.ManyToManyField(User, related_name='project_set')
+
+class BacklogItem(models.Model):
+    '''
+    @name : Backlog item name.
+    @summary : Short summary of backlog item.
+    @description : Description of backlog item. This can be long.
+    @priority : Priority of backlog item. This has range of 0 to 128.
+    @status : Backlog item status.
+        - pending: Item is in the ProductBacklog but not in SprintBacklog.
+        - assigned : Item is assigned to user.
+        - started : User started item.
+        - done : User finished item.
+    '''
+    name = models.CharField(max_length=64)
+    summary = models.CharField(max_length=256)
+    description = models.TextField()
+    priority = models.IntegerField()
+    status = models.CharField(max_length=16)
