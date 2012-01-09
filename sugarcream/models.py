@@ -24,6 +24,8 @@ class BacklogItem(models.Model):
         - assigned : Item is assigned to user.
         - started : User started item.
         - done : User finished item.
+    @project : Project that item belongs to.
+    @assignedTo : User that item is assigned to.
     '''
     name = models.CharField(max_length=64)
     summary = models.CharField(max_length=256)
