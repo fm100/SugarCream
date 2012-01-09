@@ -30,3 +30,5 @@ class BacklogItem(models.Model):
     description = models.TextField()
     priority = models.IntegerField()
     status = models.CharField(max_length=16)
+    project = models.ForeignKey(Project)
+    assignedTo = models.ForeignKey(User, null=True)

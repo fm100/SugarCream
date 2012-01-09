@@ -71,12 +71,18 @@ class ProjectTest(TestCase):
 
 class BacklogItemTest(TestCase):
     def setUp(self):
+        user = User.objects.create_user(username='test',
+                                        password='test',
+                                        email='test@testmail.org')
+        self.project = Project(owner=user)
+        self.project.save()
         item = BacklogItem()
         item.name = 'testItem'
         item.summary = 'summary'
         item.description = 'description'
         item.priority = 0
         item.status = 'pending'
+        item.project = self.project
         item.save()
 
     def testItemValues(self):
@@ -86,6 +92,15 @@ class BacklogItemTest(TestCase):
         self.assertEqual(item.description, 'description')
         self.assertEqual(item.priority, 0)
         self.assertEqual(item.status, 'pending')
+        self.assertEqual(item.project, self.project)
+
+    def testBacklogItemAssign(self):
+        user1 = User.objects.create_user(username='user1',
+                                         password='password',
+                                         email='user1@sugarcream.org')
+        user1.backlogitem_set.add(BacklogItem.objects.get(id=1))
+        item = BacklogItem.objects.get(project=self.project, assignedTo=user1)
+        self.assertEqual(item, BacklogItem.objects.get(id=1))
 
     def tearDown(self):
         items = BacklogItem.objects.all()
