@@ -40,7 +40,6 @@ def userpage(request):
     dummy = '<html><body>uer %s page.</body></html>' % request.user.username
     return HttpResponse(dummy)
 
-@login_required
 def projectpage(request, project):
     try:
         p = Project.objects.get(name=project)
