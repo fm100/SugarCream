@@ -3,15 +3,18 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from sugarcream.forms import *
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
+from sugarcream.forms import *
+from sugarcream.models import *
 
 def mainpage(request):
-    output = '<html><body>SugarCream</body></html>'
-    return HttpResponse(output)
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    else:
+        return HttpResponseRedirect('/user/')
 
 def logoutpage(request):
     logout(request)
@@ -33,14 +36,15 @@ def registerpage(request):
     return render_to_response('registration/register.html', variables)
 
 @login_required
-def userpage(request, username):
-    try:
-        user = User.objects.get(username=username)
-        return HttpResponse('<html><body>%s</body></html>' % username)
-    except ObjectDoesNotExist:
-        return HttpResponseRedirect('/')
+def userpage(request):
+    dummy = '<html><body>uer %s page.</body></html>' % request.user.username
+    return HttpResponse(dummy)
 
 @login_required
 def projectpage(request, project):
-    dummy = '<html><body>project %s page.</body></html>' % project
-    return HttpResponse(dummy)
+    try:
+        p = Project.objects.get(name=project)
+        dummy = '<html><body>project %s page.</body></html>' % project
+        return HttpResponse(dummy)
+    except ObjectDoesNotExist:
+        return HttpResponseRedirect('/')
