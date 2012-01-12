@@ -13,6 +13,9 @@ class Project(models.Model):
     name = models.CharField(max_length=32, unique=True)
     collaborators = models.ManyToManyField(User, related_name='project_set')
 
+    def __unicode__(self):
+        return self.name
+
 class BacklogItem(models.Model):
     '''
     @name : Backlog item name.
@@ -34,3 +37,6 @@ class BacklogItem(models.Model):
     status = models.CharField(max_length=16)
     project = models.ForeignKey(Project)
     assignedTo = models.ForeignKey(User, null=True)
+
+    def __unicode__(self):
+        return self.name
