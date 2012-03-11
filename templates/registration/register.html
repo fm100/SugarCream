@@ -1,9 +1,39 @@
 {% extends "base.html" %}
+{% block stylesheet %}
+<link rel="stylesheet" href="/site_media/auth.css" type="text/css" />
+{% endblock %}
 {% block content %}
-<form method="post" action=".">
-{% csrf_token %}
-{{ form.as_p }}
-<input type="submit" value="sign up" />
-<input type="reset" value="reset" />
-</form>
+<div class="auth">
+  <div id="container">
+    <div id="header">
+      <div id="branding">
+        <h1 id="register-title">Registration</h1>
+      </div>
+    </div>
+    <div id="content" class="colM">
+      <form method="post" action=".">
+        {% csrf_token %}
+        <div class="form-row">
+          <p><label for="id_username">Username:</label> {{ form.username }}</p>
+        </div>
+        <div class="form-row">
+          <p><label for="id_password1">Password:</label> {{ form.password1 }}</p>
+        </div>
+        <div class="form-row">
+          <p><label for="id_password2">Confirm:</label> {{ form.password2 }}</p>
+        </div>
+        <div class="form-row">
+          <p><label for="id_email">Email:</label> {{ form.email }}</p>
+        </div>
+        <div class="submit-row">
+          <input type="submit" value="sign up" />&nbsp;&nbsp;&nbsp;
+          <input type="reset" value="reset" />
+        </div>
+      </form>
+      <script type="text/javascript">
+        document.getElementById('id_username').focus()
+      </script>
+    </div>
+  </div>
+</div>
 {% endblock %}

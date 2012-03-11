@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.contrib.auth import logout
+from django.contrib.auth.views import login
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -13,6 +14,12 @@ from sugarcream.models import *
 def mainpage(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
+    else:
+        return HttpResponseRedirect('/user/')
+
+def loginpage(request):
+    if not request.user.is_authenticated():
+        return login(request)
     else:
         return HttpResponseRedirect('/user/')
 
@@ -37,7 +44,7 @@ def registerpage(request):
 
 @login_required
 def userpage(request):
-    dummy = '<html><body>uer %s page.</body></html>' % request.user.username
+    dummy = '<html><body>user %s page.</body></html>' % request.user.username
     return HttpResponse(dummy)
 
 def projectpage(request, project):

@@ -1,9 +1,12 @@
+import os.path
 from django.conf.urls.defaults import patterns, include, url
 from django.contrib.auth.views import login as loginpage
 from sugarcream.views import *
 
 from django.contrib import admin
 admin.autodiscover()
+
+site_media = os.path.join(os.path.dirname(__file__), 'site_media')
 
 urlpatterns = patterns('',
     # Examples:
@@ -22,4 +25,6 @@ urlpatterns = patterns('',
     url(r'^register/$', registerpage),
     url(r'^user/$', userpage),
     url(r'^p/(\w+)/$', projectpage),
+    url(r'site_media/(?P<path>.*)$', 'django.views.static.serve',
+        {'document_root': site_media}),
 )
