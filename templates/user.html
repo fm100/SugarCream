@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="container">
+  <div id="header">
+    <div id="branding">
+      <div class="float-left">
+        <h1>Welcome {{ username }}</h1>
+      </div>
+      <div class="float-right">
+        <h2><a href="/logout/">LogOut</a></h2>
+      </div>
+    </div>
+  </div>
+  <div id="content" class="colM">
+  </div>
+</div>
+{% endblock %}

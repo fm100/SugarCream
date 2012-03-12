@@ -44,8 +44,8 @@ def registerpage(request):
 
 @login_required
 def userpage(request):
-    dummy = '<html><body>user %s page.</body></html>' % request.user.username
-    return HttpResponse(dummy)
+    variables = RequestContext(request, {'username': request.user.username})
+    return render_to_response('user.html', variables)
 
 def projectpage(request, project):
     try:
