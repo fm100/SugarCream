@@ -2,12 +2,7 @@
 
 from django import forms
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
 import re
-
-class LoginForm(forms.Form):
-    username = forms.CharField(max_length=30)
-    password = forms.CharField(widget=forms.PasswordInput())
 
 class RegistrationForm(forms.Form):
     username = forms.CharField(max_length=30)

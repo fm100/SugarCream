@@ -15,15 +15,24 @@
         {% csrf_token %}
         <div class="form-row">
           <p><label for="id_username">Username:</label> {{ form.username }}</p>
+          {% if form.errors.username %}
+          <ul class="errorlist"><li>{{ form.errors.username }}</li></ul>
+          {% endif %}
         </div>
         <div class="form-row">
           <p><label for="id_password1">Password:</label> {{ form.password1 }}</p>
         </div>
         <div class="form-row">
           <p><label for="id_password2">Confirm:</label> {{ form.password2 }}</p>
+          {% if form.errors.password2 %}
+          <ul class="errorlist"><li>{{ form.errors.password2 }}</li></ul>
+          {% endif %}
         </div>
         <div class="form-row">
           <p><label for="id_email">Email:</label> {{ form.email }}</p>
+          {% if form.errors.email %}
+          <ul class="errorlist"><li>{{ form.errors.email }}</li></ul>
+          {% endif %}
         </div>
         <div class="submit-row">
           <input type="submit" value="sign up" />&nbsp;&nbsp;&nbsp;

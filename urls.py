@@ -1,6 +1,5 @@
 import os.path
 from django.conf.urls.defaults import patterns, include, url
-from django.contrib.auth.views import login as loginpage
 from sugarcream.views import *
 
 from django.contrib import admin

@@ -13,6 +13,9 @@
     <div id="content" class="colM">
       <form method="post" action=".">
         {% csrf_token %}
+        {% if form.errors %}
+        <ul class="errorlist"><li>Please enter a correct username and password. Note that both fields are case-sensitive.</li></ul>
+        {% endif %}
         <div class="form-row">
           <p><label for="id_username">Username:</label> {{ form.username }}</p>
         </div>
