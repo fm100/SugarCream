@@ -50,7 +50,8 @@ def userpage(request):
 def projectpage(request, project):
     try:
         p = Project.objects.get(name=project)
-        dummy = '<html><body>project %s page.</body></html>' % project
-        return HttpResponse(dummy)
+        variables = RequestContext(request,
+                                   {'user': request.user, 'project': project})
+        return render_to_response('project.html', variables)
     except ObjectDoesNotExist:
         return HttpResponseRedirect('/')

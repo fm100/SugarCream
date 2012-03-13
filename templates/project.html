@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="container">
+  <div id="header">
+    <div id="branding">
+      <div class="float-left">
+        <h1>{{ project }}</h1>
+      </div>
+      <div class="float-right">
+        {% if user.is_authenticated %}
+        <h2><a href="/logout/">LogOut</a></h2>
+        {% else %}
+        <h2><a href="/login/">LogIn</a></h2>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div id="content" class="colM">
+  </div>
+</div>
+{% endblock %}
