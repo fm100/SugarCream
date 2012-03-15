@@ -1,47 +1,84 @@
 {% extends "base.html" %}
-{% block stylesheet %}
-<link rel="stylesheet" href="/site_media/auth.css" type="text/css" />
+{% block styles %}
+<style type="text/css">
+  /* Override some defaults */
+  html, body {
+    background-color: #eee;
+  }
+  body {
+    padding-top: 40px;
+  }
+  .container {
+    width: 300px;
+  }
+ 
+  /* The white background content wrapper */
+  .container > .content {
+    background-color: #fff;
+    padding: 20px;
+    margin: 0 -20px;
+    -webkit-border-radius: 10px 10px 10px 10px;
+    -moz-border-radius: 10px 10px 10px 10px;
+    border-radius: 10px 10px 10px 10px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+    box-shadow: 0 1px 2px rgba(0,0,0,.15);
+  }
+ 
+  .register-form {
+    margin-left: 65px;
+  }
+ 
+  legend {
+    margin-right: -50px;
+    font-weight: bold;
+    color: #404040;
+  }
+</style>
 {% endblock %}
 {% block content %}
-<div class="auth">
-  <div id="container">
-    <div id="header">
-      <div id="branding">
-        <h1 id="register-title">Registration</h1>
+<div class="container">
+  <div class="content">
+    <div class="row">
+      <div class="register-form">
+        <h2>Registration</h2>
+        <form method="post" action=".">
+          {% csrf_token %}
+          <fieldset>
+            <div class="control-group">
+              <input id="id_username" type="text" name="username"
+                     maxlength="30" placeholder="Username"/>
+              {% if form.errors.username %}
+              {{ form.errors.username }}
+              {% endif %}
+            </div>
+            <div class="control-group">
+              <input type="password" name="password1" id="id_passowrd"
+                     placeholder="Password" />
+            </div>
+            <div class="control-group">
+              <input type="password" name="password2" id="id_password2"
+                     placeholder="Confirm Password" />
+              {% if form.errors.password2 %}
+              {{ form.errors.password2 }}
+              {% endif %}
+            </div>
+            <div class="control-group">
+              <input type="text" name="email" id="id_email"
+                     placeholder="E-mail" />
+              {% if form.errors.email %}
+              {{ form.errors.email }}
+              {% endif %}
+            </div>
+            <button class="btn btn-primary" type="submit">Sign up</button>
+            <button class="btn btn-primary" type="reset">Reset</button>
+            <input type="hidden" name="next" value="/login/" />
+          </fieldset>
+          <script type="text/javascript">
+            document.getElementById('id_username').focus()
+          </script>
+        </form>
       </div>
-    </div>
-    <div id="content" class="colM">
-      <form method="post" action=".">
-        {% csrf_token %}
-        <div class="form-row">
-          <p><label for="id_username">Username:</label> {{ form.username }}</p>
-          {% if form.errors.username %}
-          <ul class="errorlist"><li>{{ form.errors.username }}</li></ul>
-          {% endif %}
-        </div>
-        <div class="form-row">
-          <p><label for="id_password1">Password:</label> {{ form.password1 }}</p>
-        </div>
-        <div class="form-row">
-          <p><label for="id_password2">Confirm:</label> {{ form.password2 }}</p>
-          {% if form.errors.password2 %}
-          <ul class="errorlist"><li>{{ form.errors.password2 }}</li></ul>
-          {% endif %}
-        </div>
-        <div class="form-row">
-          <p><label for="id_email">Email:</label> {{ form.email }}</p>
-          {% if form.errors.email %}
-          <ul class="errorlist"><li>{{ form.errors.email }}</li></ul>
-          {% endif %}
-        </div>
-        <div class="submit-row">
-          <input type="submit" value="sign up" />&nbsp;&nbsp;&nbsp;
-          <input type="reset" value="reset" />
-        </div>
-      </form>
-      <script type="text/javascript">
-        document.getElementById('id_username').focus()
-      </script>
     </div>
   </div>
 </div>

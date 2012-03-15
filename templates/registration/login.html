@@ -1,36 +1,67 @@
 {% extends "base.html" %}
-{% block stylesheet %}
-<link rel="stylesheet" href="/site_media/auth.css" type="text/css" />
+{% block styles %}
+<style type="text/css">
+  /* Override some defaults */
+  html, body {
+    background-color: #eee;
+  }
+  body {
+    padding-top: 40px;
+  }
+  .container {
+    width: 300px;
+  }
+ 
+  /* The white background content wrapper */
+  .container > .content {
+    background-color: #fff;
+    padding: 20px;
+    margin: 0 -20px;
+    -webkit-border-radius: 10px 10px 10px 10px;
+    -moz-border-radius: 10px 10px 10px 10px;
+    border-radius: 10px 10px 10px 10px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+    box-shadow: 0 1px 2px rgba(0,0,0,.15);
+  }
+ 
+  .login-form {
+    margin-left: 65px;
+  }
+ 
+  legend {
+    margin-right: -50px;
+    font-weight: bold;
+    color: #404040;
+  }
+</style>
 {% endblock %}
 {% block content %}
-<div class="auth">
-  <div id="container">
-    <div id="header">
-      <div id="branding">
-        <h1 id="login-title">SugarCream Login</h1>
+<div class="container">
+  <div class="content">
+    <div class="row">
+      <div class="login-form">
+        <h2>Login</h2>
+        <form method="post" action=".">
+          {% csrf_token %}
+          <fieldset>
+            <div class="control-group">
+              <input id="id_username" type="text" name="username"
+                     maxlength="30" placeholder="Username"/>
+            </div>
+            <div class="control-group">
+              <input type="password" name="password" id="id_passowrd"
+                     placeholder="Password" />
+            </div>
+            <button class="btn btn-primary" type="submit">Login</button>
+            &nbsp;&nbsp;<a href="/register/">Sign Up</a>
+            <input type="hidden" name="next" value="/" />
+          </fieldset>
+          <script type="text/javascript">
+            document.getElementById('id_username').focus()
+          </script>
+        </form>
       </div>
-    </div>
-    <div id="content" class="colM">
-      <form method="post" action=".">
-        {% csrf_token %}
-        {% if form.errors %}
-        <ul class="errorlist"><li>Please enter a correct username and password. Note that both fields are case-sensitive.</li></ul>
-        {% endif %}
-        <div class="form-row">
-          <p><label for="id_username">Username:</label> {{ form.username }}</p>
-        </div>
-        <div class="form-row">
-          <p><label for="id_password">Password:</label> {{ form.password }}</p>
-        </div>
-        <input type="hidden" name="next" value="/" />
-        <div class="submit-row">
-          <input type="submit" value="Log in" />&nbsp;&nbsp;
-          <a href="/register/">Sign up</a>
-        </div>
-      </form>
-      <script type="text/javascript">
-        document.getElementById('id_username').focus()
-      </script>
     </div>
   </div>
 </div>
