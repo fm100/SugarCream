@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from sugarcream.forms import *
 from sugarcream.models import *
+import json
 
 def mainpage(request):
     if not request.user.is_authenticated():
@@ -55,3 +56,12 @@ def projectpage(request, project):
         return render_to_response('project.html', variables)
     except ObjectDoesNotExist:
         return HttpResponseRedirect('/')
+
+def myprojects(request):
+    return HttpResponse(json.dumps(['Dummy', 'Dummy', 'Dummy']))
+
+def allprojects(request):
+    return HttpResponse(json.dumps(['Dummy', 'Dummy', 'Dummy']))
+
+def notices(request):
+    return HttpResponse(json.dumps(['Notice', 'Notice', 'Notice']))
