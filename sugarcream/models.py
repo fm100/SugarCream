@@ -7,10 +7,12 @@ class Project(models.Model):
     '''
     @owner : The person who made this project.
     @name : Project name.
+    @summary : Short summary about project.
     @collaborators : Project members.
     '''
     owner = models.ForeignKey(User, related_name='owned_project_set')
-    name = models.CharField(max_length=32, unique=True)
+    name = models.CharField(max_length=12, unique=True)
+    summary = models.CharField(max_length=256)
     collaborators = models.ManyToManyField(User, related_name='project_set')
 
     def __unicode__(self):
