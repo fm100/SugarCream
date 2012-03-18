@@ -8,8 +8,10 @@ Replace this with more appropriate tests for your application.
 """
 
 from django.test import TestCase
+from django.test.client import Client
 from sugarcream.models import *
 from django.contrib.auth.models import User
+import json
 
 class ProjectTest(TestCase):
     def setUp(self):
@@ -106,3 +108,54 @@ class BacklogItemTest(TestCase):
         items = BacklogItem.objects.all()
         for item in items:
             item.delete()
+
+class JSONTest(TestCase):
+    def setUp(self):
+        self.owner = User.objects.create_user(username='testOwner',
+                                              password='password',
+                                              email='testOwner@sugarcream.org')
+        self.user = User.objects.create_user(username='testuser',
+                                             password='password',
+                                             email='testuser@sugarcream.org')
+
+        self.projects = []
+        for i in range(1, 11):
+            project = Project(owner=self.owner, name='project%d' % i)
+            project.save()
+            self.projects.append(project)
+        p = Project(owner=self.user, name='owned')
+        p.save()
+        self.projects.append(p)
+
+        for i in range(1, 11, 2):
+            self.projects[i].collaborators.add(self.user)
+
+    def testAllProjects(self):
+        client = Client()
+        allprojects = json.loads(client.post('/allprojects/').content)
+        expected = [p.name for p in self.projects]
+        expected.reverse()
+        self.assertEqual(allprojects, expected)
+
+    def testMyProjectsNoAuth(self):
+        client = Client()
+        myprojects = json.loads(client.post('/myprojects/').content)
+        self.assertTrue('fail' in myprojects)
+        self.assertEqual(myprojects['fail'], 'Auth failed')
+
+    def testMyPorjects(self):
+        client = Client()
+        client.post('/login/', {'username': 'testuser',
+                                'password': 'password'})
+        myprojects = json.loads(client.post('/myprojects/').content)
+        client.post('/logout/')
+        expected = [self.projects[i].name for i in range(1, 11, 2)]
+        expected.reverse()
+        expected = ['owned'] + expected
+        self.assertEqual(myprojects, expected)
+
+    def tearDown(self):
+        for project in self.projects:
+            project.delete()
+        self.user.delete()
+        self.owner.delete()

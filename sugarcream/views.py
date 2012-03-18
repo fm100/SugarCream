@@ -58,10 +58,19 @@ def projectpage(request, project):
         return HttpResponseRedirect('/')
 
 def myprojects(request):
-    return HttpResponse(json.dumps(['Dummy', 'Dummy', 'Dummy']))
+    if not request.user.is_authenticated():
+        return HttpResponse(json.dumps({'fail': 'Auth failed'}))
+    else:
+        owned = [p.name for p in request.user.owned_project_set.all()]
+        owned.reverse()
+        myprojects = [p.name for p in request.user.project_set.all()]
+        myprojects.reverse()
+        return HttpResponse(json.dumps(owned + myprojects))
 
 def allprojects(request):
-    return HttpResponse(json.dumps(['Dummy', 'Dummy', 'Dummy']))
+    allprojects = [p.name for p in Project.objects.all()]
+    allprojects.reverse()
+    return HttpResponse(json.dumps(allprojects))
 
 def notices(request):
     return HttpResponse(json.dumps(['Notice', 'Notice', 'Notice']))
