@@ -119,23 +119,26 @@ class JSONTest(TestCase):
                                              email='testuser@sugarcream.org')
 
         self.projects = []
-        for i in range(1, 11):
+        for i in range(1, 31):
             project = Project(owner=self.owner, name='project%d' % i)
             project.save()
+            project.collaborators.add(self.owner)
             self.projects.append(project)
         p = Project(owner=self.user, name='owned')
         p.save()
+        p.collaborators.add(self.user)
         self.projects.append(p)
 
-        for i in range(1, 11, 2):
+        for i in range(1, 31, 2):
             self.projects[i].collaborators.add(self.user)
 
-    def testAllProjects(self):
+    def testLatestProjects(self):
         client = Client()
-        allprojects = json.loads(client.post('/allprojects/').content)
+        latest = json.loads(client.post('/latestprojects/').content)
         expected = [p.name for p in self.projects]
         expected.reverse()
-        self.assertEqual(allprojects, expected)
+        expected = expected[:10]
+        self.assertEqual(latest, expected)
 
     def testMyProjectsNoAuth(self):
         client = Client()
@@ -149,9 +152,8 @@ class JSONTest(TestCase):
                                 'password': 'password'})
         myprojects = json.loads(client.post('/myprojects/').content)
         client.post('/logout/')
-        expected = [self.projects[i].name for i in range(1, 11, 2)]
+        expected = [p.name for p in self.user.project_set.all()]
         expected.reverse()
-        expected = ['owned'] + expected
         self.assertEqual(myprojects, expected)
 
     def tearDown(self):

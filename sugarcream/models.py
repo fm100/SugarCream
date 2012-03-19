@@ -14,6 +14,7 @@ class Project(models.Model):
     name = models.CharField(max_length=12, unique=True)
     summary = models.CharField(max_length=256)
     collaborators = models.ManyToManyField(User, related_name='project_set')
+    createdTime = models.DateTimeField(auto_now=True, auto_now_add=True)
 
     def __unicode__(self):
         return self.name
