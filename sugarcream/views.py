@@ -74,3 +74,7 @@ def allprojects(request):
 
 def notices(request):
     return HttpResponse(json.dumps(['Notice', 'Notice', 'Notice']))
+
+@login_required
+def newprojectpage(request):
+    return HttpResponseRedirect('/')

@@ -27,6 +27,7 @@ urlpatterns = patterns('',
     url(r'^myprojects/$', myprojects),
     url(r'^allprojects/$', allprojects),
     url(r'^notices/$',notices),
+    url(r'^newproject/$', newprojectpage),
     url(r'site_media/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': site_media}),
 )
