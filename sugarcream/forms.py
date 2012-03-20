@@ -13,7 +13,7 @@ class RegistrationForm(forms.Form):
     def clean_username(self):
         username = self.cleaned_data['username']
         if not re.search(r'^\w+$', username):
-            raise forms.ValidationError('Invalid character is used for username.')
+            raise forms.ValidationError('Username must be letters and numbers only.')
         try:
             User.objects.get(username=username)
         except:
@@ -27,3 +27,14 @@ class RegistrationForm(forms.Form):
             if password1 == password2:
                 return password2
         raise forms.ValidationError('Password does not match.')
+
+class CreateProjectForm(forms.Form):
+    name = forms.CharField(max_length=12)
+    summary = forms.CharField(max_length=256, widget=forms.Textarea)
+    sprint = forms.IntegerField()
+    sprintUnit = forms.CharField()
+
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        if not re.search(r'^\w+$', name):
+            raise forms.ValidationError('Project name must be letters and numbers only.')
