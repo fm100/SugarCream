@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block styles %}
+<style type="text/css">
+  /* Override some defaults */
+  html, body {
+    background-color: #eee;
+  }
+  body {
+    padding-top: 40px;
+  }
+  .container {
+    width: 400px;
+  }
+ 
+  /* The white background content wrapper */
+  .container > .content {
+    background-color: #fff;
+    padding: 20px;
+    margin: 0 -20px;
+    -webkit-border-radius: 10px 10px 10px 10px;
+    -moz-border-radius: 10px 10px 10px 10px;
+    border-radius: 10px 10px 10px 10px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+    box-shadow: 0 1px 2px rgba(0,0,0,.15);
+  }
+ 
+  .newproject-form {
+    margin-left: 65px;
+  }
+ 
+  legend {
+    margin-right: -50px;
+    font-weight: bold;
+    color: #404040;
+  }
+
+  .input-xlarge {
+    width: 300px;
+  }
+
+  select {
+    width: 85px;
+    background-color: #ffffff;
+  }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="content">
+    <div class="row">
+      <div class="newproject-form">
+        <h2>New Project</h2>
+        <form method="post" action=".">
+          {% csrf_token %}
+          <fieldset>
+            <div class="control-group">
+              <input id="id_name" type="text" name="name" maxlength="12"
+                     placeholder="Project Name" />
+              {% if form.errors.name %}
+              {{ form.errors.name }}
+              {% endif %}
+            </div>
+            <div class="control-group">
+              <textarea id="id_summary" class="input-xlarge" name="summary"
+                        rows="5" maxlength="256"
+                        placeholder="Project Summary"></textarea>
+              {% if form.errors.summary %}
+              {{ form.errors.summary }}
+              {% endif %}
+            </div>
+            <div class="control-group">
+              <input id="id_sprint" type="text" name="sprint"
+                     placeholder="Sprint" />
+              <select id="id_sprintUnit" name="sprintUnit">
+                <option value="days">days</option>
+                <option value="weeks">weeks</option>
+                <option value="months">months</option>
+              </select>
+              {% if form.errors.sprint %}
+              {{ form.errors.sprint }}
+              {% endif %}
+            </div>
+            <button class="btn btn-inverse" type="submit">Create</button>
+            <button class="btn btn-inverse" type="reset">Reset</button>
+            <input type="hidden" name="next" value="/" />
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

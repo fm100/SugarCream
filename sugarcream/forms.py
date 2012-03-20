@@ -30,7 +30,7 @@ class RegistrationForm(forms.Form):
 
 class CreateProjectForm(forms.Form):
     name = forms.CharField(max_length=12)
-    summary = forms.CharField(max_length=256, widget=forms.Textarea)
+    summary = forms.CharField(max_length=256)
     sprint = forms.IntegerField()
     sprintUnit = forms.CharField()
 
@@ -38,3 +38,8 @@ class CreateProjectForm(forms.Form):
         name = self.cleaned_data['name']
         if not re.search(r'^\w+$', name):
             raise forms.ValidationError('Project name must be letters, numbers and underscore(_) only.')
+        try:
+            Project.object.get(name=name)
+        except:
+            return name
+        raise forms.ValidationError('Project with same name already exists.')

@@ -75,4 +75,20 @@ def notices(request):
 
 @login_required
 def newprojectpage(request):
-    return HttpResponseRedirect('/')
+    if request.method == 'POST':
+        form = CreateProjectForm(request.POST)
+        if form.is_valid():
+            p = Project(owner=request.user,
+                        name=form.cleaned_data['name'],
+                        summary=form.cleaned_data['summary'],
+                        sprint=form.cleaned_data['sprint'],
+                        sprintUnit=form.cleaned_data['sprintUnit'],
+                        status='new')
+            p.save()
+            p.collaborators.add(request.user)
+            return HttpResponseRedirect('/p/%s/' % p.name)
+    else:
+        form = CreateProjectForm()
+
+    variables = RequestContext(request, {'form': form})
+    return render_to_response('newproject.html', variables)

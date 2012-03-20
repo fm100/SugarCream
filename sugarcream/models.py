@@ -23,8 +23,8 @@ class Project(models.Model):
     summary = models.CharField(max_length=256)
     collaborators = models.ManyToManyField(User, related_name='project_set')
     createdTime = models.DateTimeField(auto_now=True, auto_now_add=True)
-    sprint = models.IntegerField(default=0)
-    sprintUnit = models.CharField(max_length=8, default="")
+    sprint = models.IntegerField()
+    sprintUnit = models.CharField(max_length=8)
     status = models.CharField(max_length=16)
 
     def __unicode__(self):
