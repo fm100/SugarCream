@@ -13,7 +13,7 @@ class RegistrationForm(forms.Form):
     def clean_username(self):
         username = self.cleaned_data['username']
         if not re.search(r'^\w+$', username):
-            raise forms.ValidationError('Username must be letters and numbers only.')
+            raise forms.ValidationError('Username must be letters, numbers and underscore(_) only.')
         try:
             User.objects.get(username=username)
         except:
@@ -37,4 +37,4 @@ class CreateProjectForm(forms.Form):
     def clean_name(self):
         name = self.cleaned_data['name']
         if not re.search(r'^\w+$', name):
-            raise forms.ValidationError('Project name must be letters and numbers only.')
+            raise forms.ValidationError('Project name must be letters, numbers and underscore(_) only.')
