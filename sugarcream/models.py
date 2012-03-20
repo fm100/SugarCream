@@ -9,12 +9,23 @@ class Project(models.Model):
     @name : Project name.
     @summary : Short summary about project.
     @collaborators : Project members.
+    @sprint : Time quantum of one iteration.
+    @sprintUnit : One of the days, weeks, or months.
+    @status : Project status. This field should have one of the following:
+        - new : Project is just created but not started.
+        - running : Project is started and is going on track.
+        - blocked : Project is temporarily paused for some kind of reasons.
+        - done : Project is ended successfully.
+        - dumped : Project is ended but not successfully.
     '''
     owner = models.ForeignKey(User, related_name='owned_project_set')
     name = models.CharField(max_length=12, unique=True)
     summary = models.CharField(max_length=256)
     collaborators = models.ManyToManyField(User, related_name='project_set')
     createdTime = models.DateTimeField(auto_now=True, auto_now_add=True)
+    sprint = models.IntegerField(default=0)
+    sprintUnit = models.CharField(max_length=8, default="")
+    status = models.CharField(max_length=16)
 
     def __unicode__(self):
         return self.name
