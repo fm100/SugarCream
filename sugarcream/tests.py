@@ -18,15 +18,30 @@ class ProjectTest(TestCase):
         testOwner = User.objects.create_user(username='testOwner',
                                              password='password',
                                              email='testOwner@sugarcream.org')
-        project1 = Project(owner=testOwner, name='project1')
+        project1 = Project(owner=testOwner,
+                           name='project1',
+                           summary='summary',
+                           sprint=4,
+                           sprintUnit='weeks',
+                           status='new')
         project1.save()
-        project2 = Project(owner=testOwner, name='project2')
+        project2 = Project(owner=testOwner,
+                           name='project2',
+                           summary='summary',
+                           sprint=4,
+                           sprintUnit='weeks',
+                           status='new')
         project2.save()
 
     def testNameUniqueness(self):
         testOwner = User.objects.get(username='testOwner')
         try:
-            project = Project(owner=testOwner, name='testProject')
+            project = Project(owner=testOwner,
+                              name='project1',
+                              summary='different summary',
+                              sprint=5,
+                              sprintUnit='weeks',
+                              status='new')
             project.save()
             self.fail()
         except:
@@ -76,7 +91,12 @@ class BacklogItemTest(TestCase):
         user = User.objects.create_user(username='test',
                                         password='test',
                                         email='test@testmail.org')
-        self.project = Project(owner=user)
+        self.project = Project(owner=user,
+                               name='testProject',
+                               summary='summary',
+                               sprint=4,
+                               sprintUnit='weeks',
+                               status='new')
         self.project.save()
         item = BacklogItem()
         item.name = 'testItem'
@@ -109,6 +129,41 @@ class BacklogItemTest(TestCase):
         for item in items:
             item.delete()
 
+class RegisterTest(TestCase):
+    def setUp(self):
+        pass
+
+    def testAddUser(self):
+        client = Client()
+        client.post('/register/', {'username': 'newuser',
+                                   'password1': 'password',
+                                   'password2': 'password',
+                                   'email': 'newuser@sugarcream.org'})
+        self.assertTrue(User.objects.get(username='newuser'))
+
+    def testInvalidValue(self):
+        client = Client()
+        response = client.post('/register/', {'username': '!@$@!#',
+                                              'password1': 'password',
+                                              'password2': 'different',
+                                              'email': 'invalid email address'})
+        self.assertEqual(response.content.count('errorlist'), 3)
+
+    def testUsernameUniqueness(self):
+        client = Client()
+        client.post('/register/', {'username': 'newuser2',
+                                   'password1': 'password',
+                                   'password2': 'password',
+                                   'email': 'newuser@sugarcream.org'})
+        response = client.post('/register/', {'username': 'newuser2',
+                                              'password1': 'password',
+                                              'password2': 'password',
+                                              'email': 'newuser@sugarcream.org'})
+        self.assertTrue('Username is already in use.' in response.content)
+
+    def tearDown(self):
+        pass
+
 class JSONTest(TestCase):
     def setUp(self):
         self.owner = User.objects.create_user(username='testOwner',
@@ -120,11 +175,21 @@ class JSONTest(TestCase):
 
         self.projects = []
         for i in range(1, 31):
-            project = Project(owner=self.owner, name='project%d' % i)
+            project = Project(owner=self.owner,
+                              name='project%d' % i,
+                              summary='summary%d' % i,
+                              sprint=4,
+                              sprintUnit='weeks',
+                              status='new')
             project.save()
             project.collaborators.add(self.owner)
             self.projects.append(project)
-        p = Project(owner=self.user, name='owned')
+        p = Project(owner=self.user,
+                    name='owned',
+                    summary='owned project',
+                    sprint=4,
+                    sprintUnit='weeks',
+                    status='new')
         p.save()
         p.collaborators.add(self.user)
         self.projects.append(p)
@@ -161,3 +226,25 @@ class JSONTest(TestCase):
             project.delete()
         self.user.delete()
         self.owner.delete()
+
+class NewProjectTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser',
+                                             password='password',
+                                             email='testuser@sugarcream.org')
+
+    def testNewProject(self):
+        client = Client()
+        client.post('/login/', {'username': 'testuser', 'password': 'password'})
+        client.post('/newproject/', {'name': 'ProjectName',
+                                     'summary': 'ProjectSummary',
+                                     'sprint': '4',
+                                     'sprintUnit': 'weeks'})
+        p = Project.objects.get(name='ProjectName')
+        self.assertEqual(p.name, 'ProjectName')
+        self.assertEqual(p.summary, 'ProjectSummary')
+        self.assertEqual(p.sprint, 4)
+        self.assertEqual(p.sprintUnit, 'weeks')
+
+    def tearDown(self):
+        self.user.delete()
