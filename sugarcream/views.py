@@ -44,6 +44,11 @@ def registerpage(request):
     return render_to_response('registration/register.html', variables)
 
 @login_required
+def modifypage(request):
+    variables = RequestContext(request, {'user': request.user})
+    return render_to_response('registration/modify.html', variables)
+
+@login_required
 def userpage(request):
     variables = RequestContext(request, {'username': request.user.username})
     return render_to_response('user.html', variables)
