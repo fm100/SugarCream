@@ -4,14 +4,25 @@
 <script type="text/javascript">
   $(document).ready(function() {
     $.getJSON("/myprojects/", function(data) {
+      var n = 10;
       $.each(data, function(key, val) {
         $("#myprojects tbody").append("<tr><td><a href='/p/" + val + "/'>" + val + "</a></td></tr>");
+        n--;
       })
+      for (i = 0; i < n; ++i) {
+        $("#myprojects tbody").append("<tr><td>&nbsp;</td></tr>");
+      }
     });
+
     $.getJSON("/latestprojects/", function(data) {
+      var n = 10;
       $.each(data, function(key, val) {
         $("#latestprojects tbody").append("<tr><td><a href='/p/" + val + "/'>" + val + "</a></td></tr>");
+        n--;
       });
+      for (i = 0; i < n; ++i) {
+        $("#latestprojects tbody").append("<tr><td>&nbsp;</td></tr>");
+      }
     });
   });
 </script>
