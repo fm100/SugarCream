@@ -5,8 +5,9 @@
   html, body {
     background-color: #eee;
   }
-  body {
-    padding-top: 120px;
+
+  .auth {
+    padding-top: 100px;
   }
   .container {
     width: 300px;
@@ -37,39 +38,41 @@
 </style>
 {% endblock %}
 {% block content %}
-<div class="container">
-  <div class="content">
-    <div class="row">
-      <div class="modify-form">
-        <h2>Modify User Info</h2>
-        <form method="post" action=".">
-          {% csrf_token %}
-          <fieldset>
-            <div class="control-group">
-              <input id="id_username" type="text" name="username"
-                     maxlength="30" value="{{ user.username }}"
-                     disabled="disabled"/>
-            </div>
-            <div class="control-group">
-              <input type="password" name="password1" id="id_passowrd"
-                     placeholder="Password" />
-            </div>
-            <div class="control-group">
-              <input type="password" name="password2" id="id_password2"
-                     placeholder="Confirm Password" />
-            </div>
-            <div class="control-group">
-              <input type="text" name="email" id="id_email"
-                     placeholder="E-mail" value="{{ user.email }}"/>
-              {% if form.errors.email %}
-              {{ form.errors.email }}
-              {% endif %}
-            </div>
-            <button class="btn btn-inverse" type="submit">Modify</button>
-            <a class="btn btn-inverse" href="javascript:history.back()">Cancel</a>
-            <input type="hidden" name="next" value="/login/" />
-          </fieldset>
-        </form>
+<div class="auth">
+  <div class="container">
+    <div class="content">
+      <div class="row">
+        <div class="modify-form">
+          <h2>Modify User Info</h2>
+          <form method="post" action=".">
+            {% csrf_token %}
+            <fieldset>
+              <div class="control-group">
+                <input id="id_username" type="text" name="username"
+                       maxlength="30" value="{{ request.user.username }}"
+                       disabled="disabled"/>
+              </div>
+              <div class="control-group">
+                <input type="password" name="password1" id="id_passowrd"
+                       placeholder="Password" />
+              </div>
+              <div class="control-group">
+                <input type="password" name="password2" id="id_password2"
+                       placeholder="Confirm Password" />
+              </div>
+              <div class="control-group">
+                <input type="text" name="email" id="id_email"
+                       placeholder="E-mail" value="{{ request.user.email }}"/>
+                {% if form.errors.email %}
+                {{ form.errors.email }}
+                {% endif %}
+              </div>
+              <button class="btn btn-inverse" type="submit">Modify</button>
+              <a class="btn btn-inverse" href="javascript:history.back()">Cancel</a>
+              <input type="hidden" name="next" value="/login/" />
+            </fieldset>
+          </form>
+        </div>
       </div>
     </div>
   </div>

@@ -45,19 +45,19 @@ def registerpage(request):
 
 @login_required
 def modifypage(request):
-    variables = RequestContext(request, {'user': request.user})
+    variables = RequestContext(request, {'request': request})
     return render_to_response('registration/modify.html', variables)
 
 @login_required
 def userpage(request):
-    variables = RequestContext(request, {'username': request.user.username})
+    variables = RequestContext(request, {'request': request})
     return render_to_response('user.html', variables)
 
 def projectpage(request, project):
     try:
         p = Project.objects.get(name=project)
         variables = RequestContext(request,
-                                   {'user': request.user, 'project': project})
+                                   {'request': request, 'project': project})
         return render_to_response('project.html', variables)
     except ObjectDoesNotExist:
         return HttpResponseRedirect('/')

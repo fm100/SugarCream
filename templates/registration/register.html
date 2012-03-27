@@ -5,8 +5,9 @@
   html, body {
     background-color: #eee;
   }
-  body {
-    padding-top: 120px;
+
+  .auth {
+    padding-top: 100px;
   }
   .container {
     width: 300px;
@@ -37,44 +38,46 @@
 </style>
 {% endblock %}
 {% block content %}
-<div class="container">
-  <div class="content">
-    <div class="row">
-      <div class="register-form">
-        <h2>Registration</h2>
-        <form method="post" action=".">
-          {% csrf_token %}
-          <fieldset>
-            <div class="control-group">
-              <input id="id_username" type="text" name="username"
-                     maxlength="30" placeholder="Username"/>
-              {% if form.errors.username %}
-              {{ form.errors.username }}
-              {% endif %}
-            </div>
-            <div class="control-group">
-              <input type="password" name="password1" id="id_passowrd"
-                     placeholder="Password" />
-            </div>
-            <div class="control-group">
-              <input type="password" name="password2" id="id_password2"
-                     placeholder="Confirm Password" />
-              {% if form.errors.password2 %}
-              {{ form.errors.password2 }}
-              {% endif %}
-            </div>
-            <div class="control-group">
-              <input type="text" name="email" id="id_email"
-                     placeholder="E-mail" />
-              {% if form.errors.email %}
-              {{ form.errors.email }}
-              {% endif %}
-            </div>
-            <button class="btn btn-inverse" type="submit">Sign up</button>
-            <button class="btn btn-inverse" type="reset">Reset</button>
-            <input type="hidden" name="next" value="/login/" />
-          </fieldset>
-        </form>
+<div class="auth">
+  <div class="container">
+    <div class="content">
+      <div class="row">
+        <div class="register-form">
+          <h2>Registration</h2>
+          <form method="post" action=".">
+            {% csrf_token %}
+            <fieldset>
+              <div class="control-group">
+                <input id="id_username" type="text" name="username"
+                       maxlength="30" placeholder="Username"/>
+                {% if form.errors.username %}
+                {{ form.errors.username }}
+                {% endif %}
+              </div>
+              <div class="control-group">
+                <input type="password" name="password1" id="id_passowrd"
+                       placeholder="Password" />
+              </div>
+              <div class="control-group">
+                <input type="password" name="password2" id="id_password2"
+                       placeholder="Confirm Password" />
+                {% if form.errors.password2 %}
+                {{ form.errors.password2 }}
+                {% endif %}
+              </div>
+              <div class="control-group">
+                <input type="text" name="email" id="id_email"
+                       placeholder="E-mail" />
+                {% if form.errors.email %}
+                {{ form.errors.email }}
+                {% endif %}
+              </div>
+              <button class="btn btn-inverse" type="submit">Sign up</button>
+              <button class="btn btn-inverse" type="reset">Reset</button>
+              <input type="hidden" name="next" value="/login/" />
+            </fieldset>
+          </form>
+        </div>
       </div>
     </div>
   </div>

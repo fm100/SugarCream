@@ -5,9 +5,11 @@
   html, body {
     background-color: #eee;
   }
-  body {
-    padding-top: 150px;
+
+  .auth {
+    padding-top: 130px;
   }
+
   .container {
     width: 300px;
   }
@@ -37,30 +39,32 @@
 </style>
 {% endblock %}
 {% block content %}
-<div class="container">
-  <div class="content">
-    <div class="row">
-      <div class="login-form">
-        <h2>Login</h2>
-        <form method="post" action=".">
-          {% csrf_token %}
-          <fieldset>
-            <div class="control-group">
-              <input id="id_username" type="text" name="username"
-                     maxlength="30" placeholder="Username"/>
-            </div>
-            <div class="control-group">
-              <input type="password" name="password" id="id_passowrd"
-                     placeholder="Password" />
-              {% if form.errors %}
-              {{ form.non_field_errors }}
-              {% endif %}
-            </div>
-            <button class="btn btn-inverse" type="submit">Login</button>
-            &nbsp;&nbsp;<a href="/register/">Sign up</a>
-            <input type="hidden" name="next" value="/" />
-          </fieldset>
-        </form>
+<div class="auth">
+  <div class="container">
+    <div class="content">
+      <div class="row">
+        <div class="login-form">
+          <h2>Login</h2>
+          <form method="post" action=".">
+            {% csrf_token %}
+            <fieldset>
+              <div class="control-group">
+                <input id="id_username" type="text" name="username"
+                       maxlength="30" placeholder="Username"/>
+              </div>
+              <div class="control-group">
+                <input type="password" name="password" id="id_passowrd"
+                       placeholder="Password" />
+                {% if form.errors %}
+                {{ form.non_field_errors }}
+                {% endif %}
+              </div>
+              <button class="btn btn-inverse" type="submit">Login</button>
+              &nbsp;&nbsp;<a href="/register/">Sign up</a>
+              <input type="hidden" name="next" value="/" />
+            </fieldset>
+          </form>
+        </div>
       </div>
     </div>
   </div>
