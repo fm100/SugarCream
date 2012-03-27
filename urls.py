@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^$', mainpage),
+    url(r'^about/$', aboutpage),
     url(r'^login/$', loginpage),
     url(r'^logout/$', logoutpage),
     url(r'^register/$', registerpage),

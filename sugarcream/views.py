@@ -13,10 +13,12 @@ from sugarcream.models import *
 import json
 
 def mainpage(request):
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('/login/')
-    else:
-        return HttpResponseRedirect('/user/')
+    variables = RequestContext(request, {'request': request})
+    return render_to_response('home.html', variables)
+
+def aboutpage(request):
+    variables = RequestContext(request, {'request': request})
+    return render_to_response('about.html', variables)
 
 def loginpage(request):
     if not request.user.is_authenticated():
