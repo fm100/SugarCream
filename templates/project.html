@@ -1,4 +1,43 @@
 {% extends "base.html" %}
+{% block scripts %}
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript">
+  function ProductBacklog() {
+    $("#sidemenu li").removeClass ("active");
+    $("#product-backlog").addClass ("active");
+  }
+
+  function SprintBacklog() {
+    $("#sidemenu li").removeClass ("active");
+    $("#sprint-backlog").addClass ("active");
+  }
+
+  function UserStory() {
+    $("#sidemenu li").removeClass ("active");
+    $("#user-story").addClass ("active");
+  }
+
+  function IssueTracker() {
+    $("#sidemenu li").removeClass ("active");
+    $("#issue-tracker").addClass ("active");
+  }
+
+  function Documents() {
+    $("#sidemenu li").removeClass ("active");
+    $("#documents").addClass ("active");
+  }
+
+  function MeetingLog() {
+    $("#sidemenu li").removeClass ("active");
+    $("#meeting-log").addClass ("active");
+  }
+
+  function DailyScrum() {
+    $("#sidemenu li").removeClass ("active");
+    $("#daily-scrum").addClass ("active");
+  }
+</script>
+{% endblock %}
 {% block styles %}
 <style type="text/css">
   .sidebar {
@@ -20,18 +59,18 @@
     <div class="span3">
       <div class="sidebar">
         <div class="well sidebar-nav">
-          <h3 class="sidebar-title">{{ project }}</h3>
-          <ul class="nav nav-list">
+          <h3 class="sidebar-title"><a href="/p/{{ project }}/">{{ project }}</a></h3>
+          <ul id="sidemenu" class="nav nav-list">
             <li class="nav-header">Backlog</li>
-            <li><a href="#ProductBacklog">Product Backlog</a></li>
-            <li><a href="#SprintBacklog">Sprint Backlog</a></li>
+            <li id="product-backlog"><a href="javascript:ProductBacklog();">Product Backlog</a></li>
+            <li id="sprint-backlog"><a href="javascript:SprintBacklog();">Sprint Backlog</a></li>
             <li class="nav-header">Dashboard</li>
-            <li><a href="#UserStory">User Story</a></li>
-            <li><a href="#IssueTracker">Issue Tracker</a></li>
-            <li><a href="#Documents">Documents</a></li>
+            <li id="user-story"><a href="javascript:UserStory();">User Story</a></li>
+            <li id="issue-tracker"><a href="javascript:IssueTracker();">Issue Tracker</a></li>
+            <li id="documents"><a href="javascript:Documents();">Documents</a></li>
             <li class="nav-header">Meeting</li>
-            <li><a href="#MeetingLog">Meeting Log</a></li>
-            <li><a href="#DailyScrum">Daily Scrum</a></li>
+            <li id="meeting-log"><a href="javascript:MeetingLog();">Meeting Log</a></li>
+            <li id="daily-scrum"><a href="javascript:DailyScrum();">Daily Scrum</a></li>
           </ul>
         </div>
       </div>
