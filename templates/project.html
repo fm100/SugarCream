@@ -1,6 +1,43 @@
 {% extends "base.html" %}
+{% block styles %}
+<style type="text/css">
+  .sidebar {
+    padding-left: 20px;
+  }
+
+  .sidebar-title {
+    padding-left: 15px;
+  }
+
+  .sidebar-nav {
+    padding: 9px 0;
+  }
+</style>
+{% endblock %}
 {% block content %}
-<div id="container">
-  <h1>{{ project }}</h1>
+<div id="container-fluid">
+  <div class="row-fluid">
+    <div class="span3">
+      <div class="sidebar">
+        <div class="well sidebar-nav">
+          <h3 class="sidebar-title">{{ project }}</h3>
+          <ul class="nav nav-list">
+            <li class="nav-header">Backlog</li>
+            <li><a href="#ProductBacklog">Product Backlog</a></li>
+            <li><a href="#SprintBacklog">Sprint Backlog</a></li>
+            <li class="nav-header">Dashboard</li>
+            <li><a href="#UserStory">User Story</a></li>
+            <li><a href="#IssueTracker">Issue Tracker</a></li>
+            <li><a href="#Documents">Documents</a></li>
+            <li class="nav-header">Meeting</li>
+            <li><a href="#MeetingLog">Meeting Log</a></li>
+            <li><a href="#DailyScrum">Daily Scrum</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="span9">
+    </div>
+  </div>
 </div>
 {% endblock %}
