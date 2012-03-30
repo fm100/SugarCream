@@ -99,3 +99,38 @@ def newprojectpage(request):
 
     variables = RequestContext(request, {'form': form})
     return render_to_response('newproject.html', variables)
+
+def productbacklogpage(request, project):
+    variables = RequestContext(request, {'request': request,
+                                         'project': project})
+    return render_to_response('project/productbacklog.html', variables)
+
+def sprintbacklogpage(request, project):
+    variables = RequestContext(request, {'request': request,
+                                         'project': project})
+    return render_to_response('project/sprintbacklog.html', variables)
+
+def userstorypage(request, project):
+    variables = RequestContext(request, {'request': request,
+                                         'project': project})
+    return render_to_response('project/userstory.html', variables)
+
+def issuetrackerpage(request, project):
+    variables = RequestContext(request, {'request': request,
+                                         'project': project})
+    return render_to_response('project/issuetracker.html', variables)
+
+def documentspage(request, project):
+    variables = RequestContext(request, {'request': request,
+                                         'project': project})
+    return render_to_response('project/documents.html', variables)
+
+def meetinglogpage(request, project):
+    variables = RequestContext(request, {'request': request,
+                                         'project': project})
+    return render_to_response('project/meetinglog.html', variables)
+
+def dailyscrumpage(request, project):
+    variables = RequestContext(request, {'request': request,
+                                         'project': project})
+    return render_to_response('project/dailyscrum.html', variables)
