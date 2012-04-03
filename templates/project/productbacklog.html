@@ -7,5 +7,79 @@
   });
 </script>
 {% endblock %}
+{% block pstyles %}
+  .backlog {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .backlog li {
+    margin: 3px 1px 1px;
+    padding: 0.2em;
+    font-size: 1.4em;
+    height: 18px;
+    border: 1px solid #d3d3d3;
+  }
+
+  .todo {
+    background: #e6e6e6;
+  }
+
+  .inprogress {
+    background: #a0a0ff;
+  }
+
+  .done {
+    background: #a0ffa0;
+  }
+{% endblock %}
 {% block projectbody %}
+<div class="row">
+  <div class="span3">
+    <h3>Todo</h3>
+    <ul class="backlog">
+      <li class="todo">todo1</li>
+      <li class="todo">todo2</li>
+      <li class="todo">todo3</li>
+      <li class="todo">todo4</li>
+      <li class="todo">todo5</li>
+      <li class="todo">todo6</li>
+      <li class="todo">todo7</li>
+      <li class="todo">todo8</li>
+      <li class="todo">todo9</li>
+      <li class="todo">todo10</li>
+    </ul>
+  </div>
+  <div class="span3">
+    <h3>In Progress</h3>
+    <ul class="backlog">
+      <li class="inprogress">doing1</li>
+      <li class="inprogress">doing2</li>
+      <li class="inprogress">doing3</li>
+      <li class="inprogress">doing4</li>
+      <li class="inprogress">doing5</li>
+      <li class="inprogress">doing6</li>
+      <li class="inprogress">doing7</li>
+      <li class="inprogress">doing8</li>
+      <li class="inprogress">doing9</li>
+      <li class="inprogress">doing10</li>
+    </ul>
+  </div>
+  <div class="span3">
+    <h3>Done</h3>
+    <ul class="backlog">
+      <li class="done">done1</li>
+      <li class="done">done2</li>
+      <li class="done">done3</li>
+      <li class="done">done4</li>
+      <li class="done">done5</li>
+      <li class="done">done6</li>
+      <li class="done">done7</li>
+      <li class="done">done8</li>
+      <li class="done">done9</li>
+      <li class="done">done10</li>
+    </ul>
+  </div>
+</div>
 {% endblock %}
