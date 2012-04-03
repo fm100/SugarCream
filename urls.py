@@ -37,6 +37,7 @@ urlpatterns = patterns('',
     url(r'^latestprojects/$', latestprojects),
     url(r'^notices/$',notices),
     url(r'^newproject/$', newprojectpage),
+    url(r'^search/$', searchpage),
     url(r'site_media/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': site_media}),
 )

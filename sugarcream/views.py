@@ -134,3 +134,8 @@ def dailyscrumpage(request, project):
     variables = RequestContext(request, {'request': request,
                                          'project': project})
     return render_to_response('project/dailyscrum.html', variables)
+
+def searchpage(request):
+    variables = RequestContext(request, {'request': request})
+    return render_to_response('search.html', variables)
+                                         
