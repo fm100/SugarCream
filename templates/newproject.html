@@ -5,9 +5,11 @@
   html, body {
     background-color: #eee;
   }
-  body {
-    padding-top: 40px;
+
+  .newproject {
+    padding-top: 80px;
   }
+
   .container {
     width: 400px;
   }
@@ -46,46 +48,48 @@
 </style>
 {% endblock %}
 {% block content %}
-<div class="container">
-  <div class="content">
-    <div class="row">
-      <div class="newproject-form">
-        <h2>New Project</h2>
-        <form method="post" action=".">
-          {% csrf_token %}
-          <fieldset>
-            <div class="control-group">
-              <input id="id_name" type="text" name="name" maxlength="12"
-                     placeholder="Project Name" />
-              {% if form.errors.name %}
-              {{ form.errors.name }}
-              {% endif %}
-            </div>
-            <div class="control-group">
-              <textarea id="id_summary" class="input-xlarge" name="summary"
-                        rows="5" maxlength="256"
-                        placeholder="Project Summary"></textarea>
-              {% if form.errors.summary %}
-              {{ form.errors.summary }}
-              {% endif %}
-            </div>
-            <div class="control-group">
-              <input id="id_sprint" type="text" name="sprint"
-                     placeholder="Sprint" />
-              <select id="id_sprintUnit" name="sprintUnit">
-                <option value="days">days</option>
-                <option value="weeks">weeks</option>
-                <option value="months">months</option>
-              </select>
-              {% if form.errors.sprint %}
-              {{ form.errors.sprint }}
-              {% endif %}
-            </div>
-            <button class="btn btn-inverse" type="submit">Create</button>
-            <button class="btn btn-inverse" type="reset">Reset</button>
-            <input type="hidden" name="next" value="/" />
-          </fieldset>
-        </form>
+<div class="newproject">
+  <div class="container">
+    <div class="content">
+      <div class="row">
+        <div class="newproject-form">
+          <h2>New Project</h2>
+          <form method="post" action=".">
+            {% csrf_token %}
+            <fieldset>
+              <div class="control-group">
+                <input id="id_name" type="text" name="name" maxlength="12"
+                       placeholder="Project Name" />
+                {% if form.errors.name %}
+                {{ form.errors.name }}
+                {% endif %}
+              </div>
+              <div class="control-group">
+                <textarea id="id_summary" class="input-xlarge" name="summary"
+                          rows="5" maxlength="256"
+                          placeholder="Project Summary"></textarea>
+                {% if form.errors.summary %}
+                {{ form.errors.summary }}
+                {% endif %}
+              </div>
+              <div class="control-group">
+                <input id="id_sprint" type="text" name="sprint"
+                       placeholder="Sprint" />
+                <select id="id_sprintUnit" name="sprintUnit">
+                  <option value="days">days</option>
+                  <option value="weeks">weeks</option>
+                  <option value="months">months</option>
+                </select>
+                {% if form.errors.sprint %}
+                {{ form.errors.sprint }}
+                {% endif %}
+              </div>
+              <button class="btn btn-inverse" type="submit">Create</button>
+              <button class="btn btn-inverse" type="reset">Reset</button>
+              <input type="hidden" name="next" value="/" />
+            </fieldset>
+          </form>
+        </div>
       </div>
     </div>
   </div>
