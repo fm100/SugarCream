@@ -43,3 +43,8 @@ class CreateProjectForm(forms.Form):
         except:
             return name
         raise forms.ValidationError('Project with same name already exists.')
+
+class AddBacklogForm(forms.Form):
+    name = forms.CharField(max_length=64)
+    summary = forms.CharField(max_length=256)
+    description = forms.CharField()

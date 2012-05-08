@@ -101,6 +101,20 @@ def newprojectpage(request):
     return render_to_response('newproject.html', variables)
 
 def productbacklogpage(request, project):
+    if request.method == 'POST':
+        try:
+            form = AddBacklogForm(request.POST)
+            if form.is_valid():
+                p = Project.objects.get(name=project)
+                backlog = BacklogItem(name=form.cleaned_data['name'],
+                                      summary=form.cleaned_data['summary'],
+                                      description=form.cleaned_data['description'],
+                                      priority=0,
+                                      status='pending',
+                                      project=p)
+                backlog.save()
+        except ObjectDoesNotExist:
+            pass
     variables = RequestContext(request, {'request': request,
                                          'project': project})
     return render_to_response('project/productbacklog.html', variables)
@@ -114,11 +128,6 @@ def userstorypage(request, project):
     variables = RequestContext(request, {'request': request,
                                          'project': project})
     return render_to_response('project/userstory.html', variables)
-
-def issuetrackerpage(request, project):
-    variables = RequestContext(request, {'request': request,
-                                         'project': project})
-    return render_to_response('project/issuetracker.html', variables)
 
 def documentspage(request, project):
     variables = RequestContext(request, {'request': request,
@@ -139,3 +148,23 @@ def searchpage(request):
     variables = RequestContext(request, {'request': request})
     return render_to_response('search.html', variables)
                                          
+def backlogs(request, project):
+    try:
+        p = Project.objects.get(name=project)
+        backlogs = BacklogItem.objects.order_by('priority')
+        result = {'todo': [], 'doing': [], 'done': []}
+        for backlog in backlogs:
+            item = {}
+            item['name'] = backlog.name
+            item['summary'] = backlog.summary
+            item['description'] = backlog.description
+            item['assignedTo'] = backlog.assignedTo
+            if backlog.status == 'pending':
+                result['todo'].append(item)
+            elif backlog.status == 'assignedTo' or backlog.status == 'started':
+                result['doing'].append(item)
+            else:
+                result['done'].append(item)
+        return HttpResponse(json.dumps(result))
+    except ObjectDoesNotExist:
+        return HttpResponseRedirect('/')

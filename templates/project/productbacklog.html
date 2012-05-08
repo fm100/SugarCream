@@ -1,9 +1,31 @@
 {% extends "project.html" %}
 {% block scripts %}
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="/site_media/js/bootstrap-tab.js"></script>
+<script type="text/javascript" src="/site_media/js/bootstrap-modal.js"></script>
+<script type="text/javascript" src="/site_media/js/bootstrap-transition.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     $("#product-backlog").addClass("active");
+
+    $.getJSON("/p/{{ project }}/backlogs/", function(backlogs) {
+      $.each(backlogs, function(category, items) {
+        $.each(items, function(dummy, item) {
+          $.each(item, function(attr, value) {
+            if(attr == "name") {
+              $("#" + category + " ul").append("<li class=" + category + ">" + value + "</li>");
+            }
+          });
+        });
+      });
+    });
+
+    $("#ProductBacklogTab a").click(function(e) {
+      e.preventDefault();
+      $(this).tab("show");
+    });
+
+    $("AddBacklogModal").modal();
   });
 </script>
 {% endblock %}
@@ -26,7 +48,7 @@
     background: #e6e6e6;
   }
 
-  .inprogress {
+  .doing {
     background: #a0a0ff;
   }
 
@@ -35,51 +57,74 @@
   }
 {% endblock %}
 {% block projectbody %}
-<div class="row">
-  <div class="span3">
-    <h3>Todo</h3>
-    <ul class="backlog">
-      <li class="todo">todo1</li>
-      <li class="todo">todo2</li>
-      <li class="todo">todo3</li>
-      <li class="todo">todo4</li>
-      <li class="todo">todo5</li>
-      <li class="todo">todo6</li>
-      <li class="todo">todo7</li>
-      <li class="todo">todo8</li>
-      <li class="todo">todo9</li>
-      <li class="todo">todo10</li>
-    </ul>
-  </div>
-  <div class="span3">
-    <h3>In Progress</h3>
-    <ul class="backlog">
-      <li class="inprogress">doing1</li>
-      <li class="inprogress">doing2</li>
-      <li class="inprogress">doing3</li>
-      <li class="inprogress">doing4</li>
-      <li class="inprogress">doing5</li>
-      <li class="inprogress">doing6</li>
-      <li class="inprogress">doing7</li>
-      <li class="inprogress">doing8</li>
-      <li class="inprogress">doing9</li>
-      <li class="inprogress">doing10</li>
-    </ul>
-  </div>
-  <div class="span3">
-    <h3>Done</h3>
-    <ul class="backlog">
-      <li class="done">done1</li>
-      <li class="done">done2</li>
-      <li class="done">done3</li>
-      <li class="done">done4</li>
-      <li class="done">done5</li>
-      <li class="done">done6</li>
-      <li class="done">done7</li>
-      <li class="done">done8</li>
-      <li class="done">done9</li>
-      <li class="done">done10</li>
+<div class="row-fluid">
+  <div class="span12">
+    <ul id="ProductBacklogTab" class="nav nav-tabs">
+      <li class="active"><a href="#todo" data-toggle="tab">Todo</a></li>
+      <li><a href="#doing" data-toggle="tab">In Progress</a></li>
+      <li><a href="#done" data-toggle="tab">Done</a></li>
     </ul>
   </div>
 </div>
+<div class="row-fluid">
+  <div class="span4">
+    <div id="ProductBacklogTabContent" class="tab-content">
+      <div class="tab-pane fade in active" id="todo">
+        <ul class="backlog">
+        </ul>
+      </div>
+      <div class="tab-pane fade" id="doing">
+        <ul class="backlog">
+        </ul>
+      </div>
+      <div class="tab-pane fade" id="done">
+        <ul class="backlog">
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div id="detail" class="span8">
+    Backlog item detail's here.
+  </div>
+</div>
+<div class="row-fluid">
+  <div class="span12">
+    &nbsp;
+  </div>
+</div>
+<div class="row-fluid">
+  <div class="span12">
+    <div class="modal hide fade" id="AddBacklogModal">
+      <form method="post" action=".">
+        {% csrf_token %}
+        <div class="modal-header">
+          <button class="close" data-dismiss="modal">×</button>
+          <h3>Add Backlog</h3>
+        </div>
+        <div class="modal-body">
+          <div class="control-group">
+            <input id="id_name" type="text" name="name"
+                   maxlength="64" placeholder="Backlog Name" />
+          </div>
+          <div class="control-group">
+            <input id="id_summary" type="text" name="summary"
+                   maxlength="256" placeholder="Backlog Summary" />
+          </div>
+          <div class="control-group">
+            <input id="id_description" type="text" name="description"
+                   placeholder="Backlog description" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" type="reset">Reset</a>
+          <button class="btn btn-inverse" type="submit">Create</a>
+        </div>
+      </form>
+    </div>
+    <div id="addBacklog" class="pull-right">
+      <p><a data-toggle="modal" class="btn btn-inverse" href="#AddBacklogModal">Add Backlog</a></p>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
