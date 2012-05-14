@@ -54,3 +54,38 @@ class BacklogItem(models.Model):
 
     def __unicode__(self):
         return self.name
+
+class UserStory(models.Model):
+    '''
+    @name : Short name which describes the story.
+    @story : User story which user posted.
+    '''
+    name = models.CharField(max_length=32)
+    story = models.TextField()
+
+class Document(models.Model):
+    pass
+
+class MeetingLog(models.Model):
+    '''
+    @date : The day and time that meeting log is written.
+    @project : Project that this log belongs to.
+    @log : The log of the meeting.
+    '''
+    date = models.DateTimeField(auto_now=True, auto_now_add=True)
+    project = models.ForeignKey(Project)
+    log = models.TextField()
+
+class DailyScrum(models.Model):
+    '''
+    @date : The day daily scrum is written.
+    @project : Project which daily scrum is about.
+    @member : User(member of project) who writes this daily scrum.
+    @jobDidYesterday : Job what the member did yesterday.
+    @jobTodoToday : Job what the member will do today.
+    '''
+    date = models.DateTimeField(auto_now=True, auto_now_add=True)
+    project = models.ForeignKey(Project)
+    member = models.ForeignKey(User)
+    jobDidYesterday = models.CharField(max_length=128)
+    jobTodoToday = models.CharField(max_length=128)
