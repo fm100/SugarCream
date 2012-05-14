@@ -11,6 +11,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from sugarcream.forms import *
 from sugarcream.models import *
 import json
+import datetime
 
 def mainpage(request):
     variables = RequestContext(request, {'request': request})
@@ -115,8 +116,14 @@ def productbacklogpage(request, project):
                 backlog.save()
         except ObjectDoesNotExist:
             pass
+    try:
+        p = Project.objects.get(name=project)
+        owner = p.owner == request.user
+    except:
+        owner = None
     variables = RequestContext(request, {'request': request,
-                                         'project': project})
+                                         'project': project,
+                                         'owner': owner})
     return render_to_response('project/productbacklog.html', variables)
 
 def sprintbacklogpage(request, project):
@@ -148,7 +155,7 @@ def searchpage(request):
     variables = RequestContext(request, {'request': request})
     return render_to_response('search.html', variables)
                                          
-def backlogs(request, project):
+def backloglist(request, project):
     try:
         p = Project.objects.get(name=project)
         backlogs = BacklogItem.objects.order_by('priority')
@@ -156,15 +163,25 @@ def backlogs(request, project):
         for backlog in backlogs:
             item = {}
             item['name'] = backlog.name
-            item['summary'] = backlog.summary
-            item['description'] = backlog.description
-            item['assignedTo'] = backlog.assignedTo
             if backlog.status == 'pending':
                 result['todo'].append(item)
-            elif backlog.status == 'assignedTo' or backlog.status == 'started':
+            elif backlog.status == 'assigned' or backlog.status == 'started':
                 result['doing'].append(item)
             else:
                 result['done'].append(item)
         return HttpResponse(json.dumps(result))
     except ObjectDoesNotExist:
-        return HttpResponseRedirect('/')
+        return HttpResponse(json.dumps({'fail': 'No such projects'}))
+
+def backlogdetail(request, project, name):
+    try:
+        p = Project.objects.get(name=project)
+        backlog = BacklogItem.objects.get(name=name, project=p)
+        detail = {}
+        detail['name'] = backlog.name
+        detail['summary'] = backlog.summary
+        detail['description'] = backlog.description
+        detail['assignedTo'] = backlog.assignedTo.username
+        return HttpResponse(json.dumps(detail))
+    except:
+        return HttpResponse(json.dumps({'fail': 'No such item'}))

@@ -1,6 +1,7 @@
 {% extends "project.html" %}
 {% block scripts %}
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/site_media/js/bootstrap-tab.js"></script>
 <script type="text/javascript" src="/site_media/js/bootstrap-modal.js"></script>
 <script type="text/javascript" src="/site_media/js/bootstrap-transition.js"></script>
@@ -8,7 +9,7 @@
   $(document).ready(function() {
     $("#product-backlog").addClass("active");
 
-    $.getJSON("/p/{{ project }}/backlogs/", function(backlogs) {
+    $.getJSON("/p/{{ project }}/backloglist/", function(backlogs) {
       $.each(backlogs, function(category, items) {
         $.each(items, function(dummy, item) {
           $.each(item, function(attr, value) {
@@ -23,6 +24,19 @@
     $("#ProductBacklogTab a").click(function(e) {
       e.preventDefault();
       $(this).tab("show");
+    });
+
+    $(function() {
+      $(".backlog").selectable({
+        selected: function(event, ui) {
+          var uri = "/p/{{ project }}/backlogdetail/" + ui.selected.innerText;
+          $.getJSON(uri, function(detail) {
+            $.each(detail, function(attr, value) {
+              $("#backlog_" + attr).text(value);
+            });
+          });
+        }
+      });
     });
 
     $("AddBacklogModal").modal();
@@ -42,6 +56,15 @@
     font-size: 1.4em;
     height: 18px;
     border: 1px solid #d3d3d3;
+  }
+
+  .backlog .ui-selecting {
+    background: #feca40;
+  }
+
+  .backlog .ui-selected {
+    background: #f39814;
+    color: white;
   }
 
   .todo {
@@ -84,7 +107,16 @@
     </div>
   </div>
   <div id="detail" class="span8">
-    Backlog item detail's here.
+    <dl class="dl-horizontal">
+      <dt>Name</dt>
+      <dd id="backlog_name"></dd>
+      <dt>Summary</dt>
+      <dd id="backlog_summary"></dd>
+      <dt>Description</dt>
+      <dd id="backlog_description"></dd>
+      <dt>Owner</dt>
+      <dd id="backlog_assignedTo"></dd>
+    </dl>
   </div>
 </div>
 <div class="row-fluid">
@@ -94,6 +126,7 @@
 </div>
 <div class="row-fluid">
   <div class="span12">
+    {% if owner %}
     <div class="modal hide fade" id="AddBacklogModal">
       <form method="post" action=".">
         {% csrf_token %}
@@ -116,14 +149,46 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn" type="reset">Reset</a>
-          <button class="btn btn-inverse" type="submit">Create</a>
+          <button class="btn" type="reset">Reset</button>
+          <button class="btn btn-inverse" type="submit">Create</button>
         </div>
       </form>
+    </div> <!-- AddBacklog -->
+    <div class="modal hide fade" id="ModifyBacklogModal">
+      <form method="post" action=".">
+        {% csrf_token %}
+        <div class="modal-header">
+          <button class="close" data-dismiss="modal">×</button>
+          <h3>Modify Backlog</h3>
+        </div>
+        <div class="modal-body">
+          <div class="control-group">
+            <input id="id_name" type="text" name="name"
+                   maxlength="64" placeholder="Backlog Name" />
+          </div>
+          <div class="control-group">
+            <input id="id_summary" type="text" name="summary"
+                   maxlength="256" placeholder="Backlog Summary" />
+          </div>
+          <div class="control-group">
+            <input id="id_description" type="text" name="description"
+                   placeholder="Backlog description" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" type="reset">Reset</button>
+          <button class="btn btn-inverse" type="submit">Create</button>
+        </div>
+      </form>
+    </div> <!-- Modify Backlog -->
+
+    <div id="ManageBacklog" class="pull-right">
+      <p>
+        <a data-toggle="modal" class="btn btn-inverse" href="#AddBacklogModal">Add Backlog</a>
+        <a data-toggle="modal" class="btn btn-inverse" href="#ModifyBacklogModal">Modify Backlog</a>
+      </p>
     </div>
-    <div id="addBacklog" class="pull-right">
-      <p><a data-toggle="modal" class="btn btn-inverse" href="#AddBacklogModal">Add Backlog</a></p>
-    </div>
+    {% endif %}
   </div>
 </div>
 
