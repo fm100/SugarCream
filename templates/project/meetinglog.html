@@ -1,6 +1,8 @@
 {% extends "project.html" %}
 {% block scripts %}
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="/site_media/js/bootstrap-modal.js"></script>
+<script type="text/javascript" src="/site_media/js/bootstrap-transition.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     $("#meeting-log").addClass("active");
@@ -8,4 +10,34 @@
 </script>
 {% endblock %}
 {% block projectbody %}
+{% for meetinglog in meetinglogs %}
+  Date : {{ meetinglog.date }}<br>
+  Log : {{ meetinglog.log }}<br>
+  <hr>
+{% endfor %}
+
+<div class="modal hide fade" id="AddMeetingLogModal">
+  <form method="post" action=".">
+    {% csrf_token %}
+    <div class="modal-header">
+      <button class="close" data-dismiss="modal">×</button>
+      <h3>Write MeetingLog</h3>
+    </div>
+    <div class="modal-body">
+      <div class="control-group">
+        <input id="id_meetinglog" type="text" name="meetinglog"
+               maxlength="256" placeholder="MeetingLog" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" type="reset">Reset</button>
+      <button class="btn btn-inverse" type="submit">Write</button>
+    </div>
+  </form>
+</div>
+<div id="AddMeetingLog" class="pull-right">
+  <p>
+    <a data-toggle="modal" class="btn btn-inverse" href="#AddMeetingLogModal">Write MeetingLog</a>
+  </p>
+
 {% endblock %}

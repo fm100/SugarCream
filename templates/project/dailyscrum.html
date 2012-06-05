@@ -1,6 +1,8 @@
 {% extends "project.html" %}
 {% block scripts %}
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="/site_media/js/bootstrap-modal.js"></script>
+<script type="text/javascript" src="/site_media/js/bootstrap-transition.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     $("#daily-scrum").addClass("active");
@@ -8,4 +10,40 @@
 </script>
 {% endblock %}
 {% block projectbody %}
+{% for dailyscrum in dailyscrums %}
+  User : {{ dailyscrum.user.username }}<br>
+  Date : {{ dailyscrum.date }}<br>
+  Yesterday : {{ dailyscrum.yesterday }}<br>
+  Today : {{ dailyscrum.today }}<br>
+  <hr>
+{% endfor %}
+
+<div class="modal hide fade" id="AddDailyScrumModal">
+  <form method="post" action=".">
+    {% csrf_token %}
+    <div class="modal-header">
+      <button class="close" data-dismiss="modal">×</button>
+      <h3>Write DailyScrum</h3>
+    </div>
+    <div class="modal-body">
+      <div class="control-group">
+        <input id="id_jobDidYesterday" type="text" name="jobDidYesterday"
+               maxlength="256" placeholder="Yesterday" />
+      </div>
+      <div class="control-group">
+        <input id="id_jobTodoToday" type="text" name="jobTodoToday"
+               maxlength="256" placeholder="Today" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" type="reset">Reset</button>
+      <button class="btn btn-inverse" type="submit">Write</button>
+    </div>
+  </form>
+</div>
+<div id="AddDailyScrum" class="pull-right">
+  <p>
+    <a data-toggle="modal" class="btn btn-inverse" href="#AddDailyScrumModal">Write DailyScrum</a>
+  </p>
+
 {% endblock %}

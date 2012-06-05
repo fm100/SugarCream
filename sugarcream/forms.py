@@ -48,3 +48,15 @@ class AddBacklogForm(forms.Form):
     name = forms.CharField(max_length=64)
     summary = forms.CharField(max_length=256)
     description = forms.CharField()
+    priority = forms.CharField()
+
+class WriteDailyScrumForm(forms.Form):
+    jobDidYesterday = forms.CharField(max_length=256)
+    jobTodoToday = forms.CharField(max_length=256)
+
+class MeetingLogForm(forms.Form):
+    meetinglog = forms.CharField()
+
+class UserStoryForm(forms.Form):
+    name = forms.CharField(max_length=32)
+    story = forms.CharField()

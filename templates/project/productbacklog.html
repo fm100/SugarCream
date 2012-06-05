@@ -5,18 +5,26 @@
 <script type="text/javascript" src="/site_media/js/bootstrap-tab.js"></script>
 <script type="text/javascript" src="/site_media/js/bootstrap-modal.js"></script>
 <script type="text/javascript" src="/site_media/js/bootstrap-transition.js"></script>
+<script type="text/javascript" src="/site_media/js/bootstrap-dropdown.js"></script>
 <script type="text/javascript">
+
   $(document).ready(function() {
     $("#product-backlog").addClass("active");
 
     $.getJSON("/p/{{ project }}/backloglist/", function(backlogs) {
       $.each(backlogs, function(category, items) {
         $.each(items, function(dummy, item) {
-          $.each(item, function(attr, value) {
-            if(attr == "name") {
-              $("#" + category + " ul").append("<li class=" + category + ">" + value + "</li>");
-            }
-          });
+          var priority;
+          if(item["priority"] == 0)
+            priority = "high-priority";
+          else if(item["priority"] == 1)
+            priority = "medium-priority";
+          else
+            priority = "low-priority";
+          if(category != "todo")
+            priority = "doing-done";
+          li = "<li class=" + priority + ">" + item["name"] + "</li>";
+          $("#" + category + " ul").append(li);
         });
       });
     });
@@ -24,6 +32,11 @@
     $("#ProductBacklogTab a").click(function(e) {
       e.preventDefault();
       $(this).tab("show");
+
+      if (this.innerText == "Todo")
+        $("#modify-backlog").show();
+      else
+        $("#modify-backlog").hide();
     });
 
     $(function() {
@@ -41,6 +54,26 @@
 
     $("AddBacklogModal").modal();
   });
+
+  function modifyBacklog() {
+    selected = $("#todo .ui-selected");
+    if (selected.size() == 0) {
+      alert("Please select the item to modify.");
+      return false;
+    }
+
+    var uri = "/p/{{ project }}/backlogdetail/" + selected[0].innerText;
+    $.getJSON(uri, function(detail) {
+      $.each(detail, function(attr, value) {
+        $("#ModifyBacklogModal #id_" + attr).val(value);
+      });
+    });
+    $("#ModifyBacklogModal").modal("show");
+  }
+
+  function setPriority(modal, priority) {
+    $(modal + " #id_priority").val(priority);
+  }
 </script>
 {% endblock %}
 {% block pstyles %}
@@ -58,6 +91,22 @@
     border: 1px solid #d3d3d3;
   }
 
+  .high-priority {
+    background: #e63333;
+  }
+
+  .medium-priority {
+    background: #33e633;
+  }
+
+  .low-priority {
+    background: #3333e6;
+  }
+
+  .doing-done {
+    background: #e6e6e6;
+  }
+
   .backlog .ui-selecting {
     background: #feca40;
   }
@@ -67,16 +116,8 @@
     color: white;
   }
 
-  .todo {
-    background: #e6e6e6;
-  }
-
-  .doing {
-    background: #a0a0ff;
-  }
-
-  .done {
-    background: #a0ffa0;
+  .input-xxlarge {
+    width: 520px;
   }
 {% endblock %}
 {% block projectbody %}
@@ -128,7 +169,7 @@
   <div class="span12">
     {% if owner %}
     <div class="modal hide fade" id="AddBacklogModal">
-      <form method="post" action=".">
+      <form method="post" action=".?am=add">
         {% csrf_token %}
         <div class="modal-header">
           <button class="close" data-dismiss="modal">×</button>
@@ -136,16 +177,28 @@
         </div>
         <div class="modal-body">
           <div class="control-group">
-            <input id="id_name" type="text" name="name"
+            <input class="input-xxlarge" id="id_name" type="text" name="name"
                    maxlength="64" placeholder="Backlog Name" />
           </div>
           <div class="control-group">
-            <input id="id_summary" type="text" name="summary"
+            <input class="input-xxlarge" id="id_summary" type="text" name="summary"
                    maxlength="256" placeholder="Backlog Summary" />
           </div>
           <div class="control-group">
-            <input id="id_description" type="text" name="description"
-                   placeholder="Backlog description" />
+            <textarea class="input-xxlarge" id="id_description" type="text"
+                      name="description" placeholder="Backlog description"></textarea>
+          </div>
+          <div class="control-group">
+            <div class="btn-group dropup">
+              <a class="btn dropdown-toggle" data-toggle="dropdown"
+                 href="#">Priority<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="javascript:setPriority('#AddBacklogModal', 'High')">High</a></li>
+                <li><a href="javascript:setPriority('#AddBacklogModal', 'Medium')">Medium</a></li>
+                <li><a href="javascript:setPriority('#AddBacklogModal', 'Low')">Low</a></li>
+              </ul>
+              <input id="id_priority" name="priority" type="text" readonly="readonly" />
+            </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -155,7 +208,7 @@
       </form>
     </div> <!-- AddBacklog -->
     <div class="modal hide fade" id="ModifyBacklogModal">
-      <form method="post" action=".">
+      <form method="post" action=".?am=modify">
         {% csrf_token %}
         <div class="modal-header">
           <button class="close" data-dismiss="modal">×</button>
@@ -163,21 +216,33 @@
         </div>
         <div class="modal-body">
           <div class="control-group">
-            <input id="id_name" type="text" name="name"
-                   maxlength="64" placeholder="Backlog Name" />
+            <input class="input-xxlarge" id="id_name" type="text" name="name"
+                   maxlength="64" placeholder="Backlog Name" readonly="readonly" />
           </div>
           <div class="control-group">
-            <input id="id_summary" type="text" name="summary"
+            <input class="input-xxlarge" id="id_summary" type="text" name="summary"
                    maxlength="256" placeholder="Backlog Summary" />
           </div>
           <div class="control-group">
-            <input id="id_description" type="text" name="description"
-                   placeholder="Backlog description" />
+            <textarea class="input-xxlarge" id="id_description" type="text"
+                      name="description" placeholder="Backlog description"></textarea>
+          </div>
+          <div class="control-group">
+            <div class="btn-group dropup">
+              <a class="btn dropdown-toggle" data-toggle="dropdown"
+                 href="#">Priority<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="javascript:setPriority('#ModifyBacklogModal', 'High')">High</a></li>
+                <li><a href="javascript:setPriority('#ModifyBacklogModal', 'Medium')">Medium</a></li>
+                <li><a href="javascript:setPriority('#ModifyBacklogModal', 'Low')">Low</a></li>
+              </ul>
+              <input id="id_priority" name="priority" type="text" readonly="readonly" />
+            </div>
           </div>
         </div>
         <div class="modal-footer">
           <button class="btn" type="reset">Reset</button>
-          <button class="btn btn-inverse" type="submit">Create</button>
+          <button class="btn btn-inverse" type="submit">Modify</button>
         </div>
       </form>
     </div> <!-- Modify Backlog -->
@@ -185,7 +250,7 @@
     <div id="ManageBacklog" class="pull-right">
       <p>
         <a data-toggle="modal" class="btn btn-inverse" href="#AddBacklogModal">Add Backlog</a>
-        <a data-toggle="modal" class="btn btn-inverse" href="#ModifyBacklogModal">Modify Backlog</a>
+        <a id="modify-backlog" data-toggle="modal" class="btn btn-inverse" href="javascript:modifyBacklog()">Modify Backlog</a>
       </p>
     </div>
     {% endif %}

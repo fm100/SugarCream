@@ -44,7 +44,7 @@ class BacklogItem(models.Model):
     @project : Project that item belongs to.
     @assignedTo : User that item is assigned to.
     '''
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64, unique=True)
     summary = models.CharField(max_length=256)
     description = models.TextField()
     priority = models.IntegerField()

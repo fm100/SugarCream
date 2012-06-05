@@ -105,14 +105,24 @@ def productbacklogpage(request, project):
     if request.method == 'POST':
         try:
             form = AddBacklogForm(request.POST)
+            p = Project.objects.get(name=project)
             if form.is_valid():
-                p = Project.objects.get(name=project)
-                backlog = BacklogItem(name=form.cleaned_data['name'],
-                                      summary=form.cleaned_data['summary'],
-                                      description=form.cleaned_data['description'],
-                                      priority=0,
-                                      status='pending',
-                                      project=p)
+                if request.GET.get('am') == 'add':
+                    backlog = BacklogItem()
+                else:
+                    backlog = BacklogItem.objects.get(name=form.cleaned_data['name'])
+                backlog.name = form.cleaned_data['name']
+                backlog.summary = form.cleaned_data['summary']
+                backlog.description = form.cleaned_data['description']
+                priority = form.cleaned_data['priority']
+                if priority == 'High':
+                    backlog.priority = 0
+                elif priority == 'Medium':
+                    backlog.priority = 1
+                else:
+                    backlog.priority = 2
+                backlog.status = 'pending'
+                backlog.project = p
                 backlog.save()
         except ObjectDoesNotExist:
             pass
@@ -142,13 +152,45 @@ def documentspage(request, project):
     return render_to_response('project/documents.html', variables)
 
 def meetinglogpage(request, project):
+    if request.method == 'POST':
+        form = MeetingLogForm(request.POST)
+        if form.is_valid():
+            p = Project.objects.get(name=project)
+            MeetingLog(project=p,
+                       log=form.cleaned_data['meetinglog']).save()
+                   
+    meetinglogs = []
+    logs = MeetingLog.objects.order_by('date')
+    for log in logs:
+        meetinglogs.append({'date': log.date, 'log': log.log})
+
     variables = RequestContext(request, {'request': request,
-                                         'project': project})
+                                         'project': project,
+                                         'meetinglogs': meetinglogs})
     return render_to_response('project/meetinglog.html', variables)
 
 def dailyscrumpage(request, project):
+    if request.method == 'POST':
+        form = WriteDailyScrumForm(request.POST)
+        if form.is_valid():
+            p = Project.objects.get(name=project)
+            DailyScrum(project=p, member=request.user,
+                       jobDidYesterday=form.cleaned_data['jobDidYesterday'],
+                       jobTodoToday=form.cleaned_data['jobTodoToday']).save()
+                   
+    dailyscrums = []
+    dailies = DailyScrum.objects.order_by('date')
+    for daily in dailies:
+        dailyscrum = {}
+        dailyscrum['user'] = daily.member
+        dailyscrum['date'] = daily.date
+        dailyscrum['yesterday'] = daily.jobDidYesterday
+        dailyscrum['today'] = daily.jobTodoToday
+        dailyscrums.append(dailyscrum)
+    
     variables = RequestContext(request, {'request': request,
-                                         'project': project})
+                                         'project': project,
+                                         'dailyscrums': dailyscrums})
     return render_to_response('project/dailyscrum.html', variables)
 
 def searchpage(request):
@@ -163,6 +205,7 @@ def backloglist(request, project):
         for backlog in backlogs:
             item = {}
             item['name'] = backlog.name
+            item['priority'] = backlog.priority
             if backlog.status == 'pending':
                 result['todo'].append(item)
             elif backlog.status == 'assigned' or backlog.status == 'started':
@@ -181,7 +224,8 @@ def backlogdetail(request, project, name):
         detail['name'] = backlog.name
         detail['summary'] = backlog.summary
         detail['description'] = backlog.description
-        detail['assignedTo'] = backlog.assignedTo.username
+        if backlog.assignedTo is not None:
+            detail['assignedTo'] = backlog.assignedTo.username
         return HttpResponse(json.dumps(detail))
     except:
         return HttpResponse(json.dumps({'fail': 'No such item'}))
