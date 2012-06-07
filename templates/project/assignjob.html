@@ -1,0 +1,85 @@
+{% extends "project.html" %}
+{% block scripts %}
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/site_media/js/bootstrap-transition.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $("#sprint-backlog").addClass("active");
+
+    $.getJSON("/p/{{ project }}/backloglist/", function(backlogs) {
+      todo = backlogs["todo"];
+      $.each(todo, function(dummy, backlog) {
+        $("#backlog-todo").append("<li class=ui-state-default>" + backlog["name"] + "</li>");
+      });
+    });
+
+    $.getJSON("/p/{{ project }}/sprintbackloglist/", function(backlogs) {
+      $.each(backlogs, function(backlog, status) {
+        item = "<li class=ui-state-default>" + backlog + "</li>";
+        $("#backlog-user").append(item);
+      });
+    });
+
+    $("ul.droptrue").sortable({
+      connectWith: "ul",
+      receive: function(event, ui) {
+        var backlog = ui["item"][0].innerText;
+        var sender = ui["sender"][0].id;
+        var username = $("#userlist").val();
+
+        if(sender == "backlog-todo") {
+          uri = "/p/{{ project }}/" + backlog + "/" + username + "/assignjob/";
+          $.getJSON(uri, function(result) {});
+        } else {
+          uri = "/p/{{ project }}/" + backlog + "/disassignjob/";
+          $.getJSON(uri, function(result) {});
+        }
+      }
+    });
+
+    $("#backlog-todo, #backlog-user").disableSelection();
+  });
+
+  function selectUser() {
+    $("#backlog-user li").remove();
+  }
+</script>
+{% endblock %}
+{% block pstyles %}
+  #backlog-todo, #backlog-user {
+    list-style-type: none;
+    margin: 0;
+    padding: 0 0 2.5em;
+    float: left;
+    margin-right: 10px;
+    width: 290px;
+  }
+
+  #backlog-todo li, #backlog-user li {
+    margin: 0 5px 5px 5px;
+    padding: 5px;
+    font-size: 1.2em;
+    width: 260px;
+  }
+{% endblock %}
+{% block projectbody %}
+<div class="row-fluid">
+  <div class="span5">
+    <h3>Todo</h3>
+    <ul id="backlog-todo" class="droptrue">
+    </ul>
+  </div>
+  <div class="span5">
+    <h3>Select User
+      <select id="userlist" onchange="javascript:selectUser()">
+        {% for user in users %}
+        <option>{{ user }}</option>
+        {% endfor %}
+      </select>
+    </h3>
+    <ul id="backlog-user" class="droptrue">
+    </ul>
+  </div>
+</div>
+{% endblock %}

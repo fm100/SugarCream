@@ -60,3 +60,7 @@ class MeetingLogForm(forms.Form):
 class UserStoryForm(forms.Form):
     name = forms.CharField(max_length=32)
     story = forms.CharField()
+
+class UpdateBacklogStatusForm(forms.Form):
+    name = forms.CharField(max_length=64)
+    status = forms.CharField(max_length=32)

@@ -1,22 +1,74 @@
 {% extends "project.html" %}
 {% block scripts %}
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/site_media/js/bootstrap-modal.js"></script>
 <script type="text/javascript" src="/site_media/js/bootstrap-transition.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     $("#daily-scrum").addClass("active");
+    $("#datepicker").datepicker({
+      dateFormat: "yy-mm-dd",
+      onSelect: function(dateText, inst) {
+        getDailyScrum(dateText);
+      }     
+    });
+
+    $("#datepicker").val("{{ today }}")
+
+    getDailyScrum("{{ today }}");
   });
+
+  function getDailyScrum(dateText) {
+    $("tbody tr").remove();
+    $.getJSON("/p/{{ project }}/dailyscrumbydate/" + dateText + "/", function(logs) {
+      $.each(logs, function(user, log) {
+        var html = "<tr><td>" + user + "</td><td><dl class='dl-horizontal'><dt>Yesterday</dt><dd>" + log["jobDidYesterday"] + "</dd><dt>Today</dt><dd>" + log["jobTodoToday"] + "</dd></dl></td></tr>";
+        $("tbody").append(html);
+      });
+    });
+  }
 </script>
 {% endblock %}
+{% block pstyles %}
+  .input-xxlarge {
+    width: 520px;
+  }
+{% endblock %}
 {% block projectbody %}
-{% for dailyscrum in dailyscrums %}
-  User : {{ dailyscrum.user.username }}<br>
-  Date : {{ dailyscrum.date }}<br>
-  Yesterday : {{ dailyscrum.yesterday }}<br>
-  Today : {{ dailyscrum.today }}<br>
-  <hr>
-{% endfor %}
+<div class="row-fluid">
+  <div class="span12">
+    <p>Date : <input type="text" id="datepicker" /></p>
+  </div>
+</div>
+<div class="row-fluid">
+  <div class="span11">
+    <table class="table table-bordered" width="100%">
+      <thead>
+        <tr>
+          <th width="15%"><center>User</center></th>
+          <th width="85%"><center>Daily Log</center></th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="row-fluid">
+  <div class="span12">
+    <hr>
+  </div>
+</div>
+<div class="row-fluid">
+  <div class="span11">
+    <div id="AddDailyScrum" class="pull-right">
+      <p>
+        <a data-toggle="modal" class="btn btn-inverse" href="#AddDailyScrumModal">Write DailyScrum</a>
+      </p>
+    </div>
+  </div>
+</div>
 
 <div class="modal hide fade" id="AddDailyScrumModal">
   <form method="post" action=".">
@@ -27,12 +79,12 @@
     </div>
     <div class="modal-body">
       <div class="control-group">
-        <input id="id_jobDidYesterday" type="text" name="jobDidYesterday"
-               maxlength="256" placeholder="Yesterday" />
+        <input class="input-xxlarge" id="id_jobDidYesterday" type="text"
+               name="jobDidYesterday" maxlength="256" placeholder="Yesterday" />
       </div>
       <div class="control-group">
-        <input id="id_jobTodoToday" type="text" name="jobTodoToday"
-               maxlength="256" placeholder="Today" />
+        <input class="input-xxlarge" id="id_jobTodoToday" type="text"
+               name="jobTodoToday" maxlength="256" placeholder="Today" />
       </div>
     </div>
     <div class="modal-footer">
@@ -41,9 +93,4 @@
     </div>
   </form>
 </div>
-<div id="AddDailyScrum" class="pull-right">
-  <p>
-    <a data-toggle="modal" class="btn btn-inverse" href="#AddDailyScrumModal">Write DailyScrum</a>
-  </p>
-
 {% endblock %}

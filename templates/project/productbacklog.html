@@ -39,26 +39,22 @@
         $("#modify-backlog").hide();
     });
 
-    $(function() {
-      $(".backlog").selectable({
-        selected: function(event, ui) {
-          var uri = "/p/{{ project }}/backlogdetail/" + ui.selected.innerText;
-          $.getJSON(uri, function(detail) {
-            $.each(detail, function(attr, value) {
-              $("#backlog_" + attr).text(value);
-            });
+    $(".backlog").selectable({
+      selected: function(event, ui) {
+        var uri = "/p/{{ project }}/backlogdetail/" + ui.selected.innerText;
+        $.getJSON(uri, function(detail) {
+          $.each(detail, function(attr, value) {
+            $("#backlog_" + attr).text(value);
           });
-        }
-      });
+        });
+      }
     });
-
-    $("AddBacklogModal").modal();
   });
 
   function modifyBacklog() {
     selected = $("#todo .ui-selected");
-    if (selected.size() == 0) {
-      alert("Please select the item to modify.");
+    if(selected.size() != 1) {
+      alert("One item must be selected.");
       return false;
     }
 

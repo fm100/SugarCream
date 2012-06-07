@@ -22,7 +22,7 @@ class Project(models.Model):
     name = models.CharField(max_length=12, unique=True)
     summary = models.CharField(max_length=256)
     collaborators = models.ManyToManyField(User, related_name='project_set')
-    createdTime = models.DateTimeField(auto_now=True, auto_now_add=True)
+    createdTime = models.DateField(auto_now=True, auto_now_add=True)
     sprint = models.IntegerField()
     sprintUnit = models.CharField(max_length=8)
     status = models.CharField(max_length=16)
@@ -35,7 +35,7 @@ class BacklogItem(models.Model):
     @name : Backlog item name.
     @summary : Short summary of backlog item.
     @description : Description of backlog item. This can be long.
-    @priority : Priority of backlog item. This has range of 0 to 128.
+    @priority : Priority of backlog item. This has range of 0 to 2.
     @status : Backlog item status.
         - pending: Item is in the ProductBacklog but not in SprintBacklog.
         - assigned : Item is assigned to user.
@@ -44,7 +44,7 @@ class BacklogItem(models.Model):
     @project : Project that item belongs to.
     @assignedTo : User that item is assigned to.
     '''
-    name = models.CharField(max_length=64, unique=True)
+    name = models.CharField(max_length=64)
     summary = models.CharField(max_length=256)
     description = models.TextField()
     priority = models.IntegerField()
@@ -84,7 +84,7 @@ class DailyScrum(models.Model):
     @jobDidYesterday : Job what the member did yesterday.
     @jobTodoToday : Job what the member will do today.
     '''
-    date = models.DateTimeField(auto_now=True, auto_now_add=True)
+    date = models.DateField(auto_now=True, auto_now_add=True)
     project = models.ForeignKey(Project)
     member = models.ForeignKey(User)
     jobDidYesterday = models.CharField(max_length=128)
